@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const autoIncrement = require('mongoose-auto-increment');
 
+autoIncrement.initialize(mongoose.connection);
 
 const clientSchema = new mongoose.Schema({
-    order_id:Number,
+    orderId:Number,
     name:{
         type:String,
         required:true,        
@@ -32,18 +34,22 @@ const clientSchema = new mongoose.Schema({
     email:{
         type:String,
         required:true,
+        // unique:false,
         validate:[validator.isEmail, 'email is invalid']
     },
-    hostings:{
+    hostings:[{
         type: mongoose.Schema.Types.ObjectId,
         ref:'Hosting'
-    },
-    domains:{
+    }],
+    domains:[{
         type: mongoose.Schema.Types.ObjectId,
         ref:'Domain'
-    }
+    }]
 
 })
 
+clientSchema.plugin(autoIncrement.plugin, { model: 'Client', field: 'orderId' });
 
-module.exports = clientSchema;
+const Client = mongoose.model('Client', clientSchema);
+
+module.exports = Client;
