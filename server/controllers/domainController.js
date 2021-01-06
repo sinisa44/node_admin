@@ -31,7 +31,13 @@ exports.show = async (req, res) => {
 
 exports.create = async (req, res) => {
     try{
-        const newDomain = await Domain.create(req.body);
+        const newDomain =  await Domain.create(req.body);
+
+        const client = await Client.findById(req.body.clientId)
+
+        client.domains.push(newDomain);
+
+        await client.save();
 
         res.status(200).json({
             data:{

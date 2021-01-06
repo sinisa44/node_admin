@@ -21,7 +21,7 @@ exports.show = async(req, res) => {
     try {
         const client = await Client.findById(req.params.id)
                                     .populate('hosting')
-                                    .populate('domain');
+                                    .populate('domains');
 
         if(!client) {
             res.status(404)
