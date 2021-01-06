@@ -50,9 +50,24 @@ exports.create = async (req, res) => {
 }
 
 exports.update = (req,res) => {
-    
+    try {
+        const domain = await Domain.findByIdAndUpdate(req.params.id, req.body, {
+            new:true,
+            runValidators: true
+        });
+
+        res.status(200).json({ data:{ domain } });
+    } catch (error) {
+        res.status(404).json({ error:error.toString() });
+    }
 }
 
 exports.delete = (req, res) => {
-
+    try{
+        await Domain.findByIdAndDelete(req.params.id);
+        
+        res.status(204).json({ data:null });
+    } catch (error) {
+        res.status(404).json({ error:error.toString() });
+    }
 }
