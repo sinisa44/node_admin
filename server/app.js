@@ -5,8 +5,9 @@ const bodyParser = require('body-parser');
 const authRouter = require('./routes/authRouter');
 const apiRouter = require('./routes/apiRouter');
 const cors = require('cors');
-
+const auth = require('./middleware/auth');
 const app = express();
+
 dotenv.config({ 'path': `${__dirname}/config.env` })
 
 if(process.env.MODE === 'DEVELOPMENT') {
@@ -14,11 +15,14 @@ if(process.env.MODE === 'DEVELOPMENT') {
 }
 
 
+console.log(auth);
+
 app.use(bodyParser.json());
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cors());
 
 app.use('/auth', authRouter);
-app.use('/api', apiRouter);
+app.use('/api', auth,  apiRouter);
 
 module.exports = app;
