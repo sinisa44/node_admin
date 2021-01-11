@@ -1,6 +1,6 @@
 const Hosting = require('../models/Hosting');
 const Client = require('../models/Client');
-
+const logController = require('./logController');
 
 
 exports.index = async (req, res) => {
@@ -38,6 +38,8 @@ exports.create = async (req, res ) => {
 
         await client.save();
 
+        await logController.create({ userId: req.user._id, type: 'CREATE', name: 'Hosting', objectId: newHosting._id })
+
         res.status(200).json({ data: { newHosting } });
     } catch ( error ) {
         res.status(400).json({ error:error.toString() });
@@ -51,6 +53,8 @@ exports.update = async (req, res) => {
             runValidators:true
         });
 
+        await logController.create({ userId: req.user._id, type: 'UPDATE', name: 'Hosting', objectId: req.params.id });
+
         res.status(200).json({ data:{ hosting } });
     } catch (error) {
         res.status(400).json({ error:error.toString() });
@@ -61,6 +65,7 @@ exports.delete = async (req, res) => {
     try{
         await Hosting.findByIdAndDelete(req.params.id);
 
+        await logController.create({ userId: req.user._id, type:'DELETE', name:'Hosting', objectId:req.params.id });
         res.status(203).json({ data:null });
     } catch( error ) {
         res.status(404).json({ error:error.toString() });

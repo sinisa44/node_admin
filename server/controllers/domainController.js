@@ -2,7 +2,6 @@ const Domain = require('../models/Domain');
 const Client = require('../models/Client');
 const logController = require('./logController');
 
-
 exports.index = async (req, res) => {
     try {
         const domains = await Domain.find();
@@ -46,7 +45,7 @@ exports.create = async (req, res) => {
         
         res.status(200).json({
             data:{
-                newDomain
+                domain: newDomain
             }
         })
     } catch (error) {
