@@ -16,9 +16,11 @@ exports.login =  async (req, res) => {
               res.status(403).json({message:'invalid password'})
           }
 
-          const { username, password, email } = user;
+          const { username, password, email, _id } = user;
 
-          const token = jwt.sign({ username, password, email }, process.env.TOKEN);
+          console.log(_id);
+
+          const token = jwt.sign({ username, password, email, _id }, process.env.TOKEN);
 
         
           res.status(200).json({

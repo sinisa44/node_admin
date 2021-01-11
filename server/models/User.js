@@ -16,7 +16,11 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-    }
+    },
+    logs:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Log'
+    }]
 });
 
 userSchema.pre('save', async function(next) {

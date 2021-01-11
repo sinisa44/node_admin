@@ -1,7 +1,11 @@
 const Domain = require('../models/Domain');
-const Client = require('../models/Client')
+const Client = require('../models/Client');
+const logController = require('./logController');
+const User = require('../models/User');
+
 
 exports.index = async (req, res) => {
+    console.log(req.user);
     try {
         const domains = await Domain.find();
 
@@ -16,6 +20,7 @@ exports.index = async (req, res) => {
 }
 
 exports.show = async (req, res) => {
+
     try {
         const domain = await Domain.findById(req.params.id);
 
@@ -31,21 +36,24 @@ exports.show = async (req, res) => {
 
 exports.create = async (req, res) => {
     try{
+
         const newDomain =  await Domain.create(req.body);
 
         const client = await Client.findById(req.body.clientId)
-
+       
         client.domains.push(newDomain);
-
+        
         await client.save();
-
+        
+        await logController.create({ userId: req.user._id, type:'CREATE', name: 'Domain' });
+        
         res.status(200).json({
             data:{
                 newDomain
             }
         })
     } catch (error) {
-        res.status(400).json({ error:error.toString() })
+        res.status(400).json({ error:error.message })
     }
 }
 
