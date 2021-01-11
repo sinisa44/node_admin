@@ -1,11 +1,9 @@
 const Domain = require('../models/Domain');
 const Client = require('../models/Client');
 const logController = require('./logController');
-const User = require('../models/User');
 
 
 exports.index = async (req, res) => {
-    console.log(req.user);
     try {
         const domains = await Domain.find();
 
@@ -20,7 +18,6 @@ exports.index = async (req, res) => {
 }
 
 exports.show = async (req, res) => {
-
     try {
         const domain = await Domain.findById(req.params.id);
 
@@ -45,7 +42,7 @@ exports.create = async (req, res) => {
         
         await client.save();
         
-        await logController.create({ userId: req.user._id, type:'CREATE', name: 'Domain' });
+        await logController.create({ userId: req.user._id, type:'CREATE', name: 'Domain', objectId: newDomain._id });
         
         res.status(200).json({
             data:{
@@ -64,6 +61,8 @@ exports.update = async (req,res) => {
             runValidators: true
         });
 
+        await logController.create({ userId: req.user._id, type: 'CREATE', name: 'Domain', objectId: req.params.id });
+
         res.status(200).json({ data:{ domain } });
     } catch (error) {
         res.status(404).json({ error:error.toString() });
@@ -73,7 +72,9 @@ exports.update = async (req,res) => {
 exports.delete = async (req, res) => {
     try{
         await Domain.findByIdAndDelete(req.params.id);
-        
+    
+        await logController.create({ userId: req.user._id, type: 'UPDATE', name: 'Domain', objectId: req.params.id });
+
         res.status(204).json({ data:null });
     } catch (error) {
         res.status(404).json({ error:error.toString() });

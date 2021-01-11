@@ -5,7 +5,8 @@ exports.create = async(params) => {
     try {
         const log = new Log({
             type: params.type,
-            name: params.name
+            name: params.name,
+            objectId:params.objectId
         });
 
         await log.save();
