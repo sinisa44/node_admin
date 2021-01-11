@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.update = (req,res) => {
+exports.update = async (req,res) => {
     try {
         const domain = await Domain.findByIdAndUpdate(req.params.id, req.body, {
             new:true,
@@ -62,7 +62,7 @@ exports.update = (req,res) => {
     }
 }
 
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     try{
         await Domain.findByIdAndDelete(req.params.id);
         
